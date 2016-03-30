@@ -1,7 +1,7 @@
 {
   "name" : "gabidj/scontainer",
   "description" : "Simple Container for PHP & Zend Expressive",
-  "version" : "1.0",
+  "version" : "1.0.0",
   "require" : {
     "php" : ">=5.5"
   },
