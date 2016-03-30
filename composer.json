@@ -1,9 +1,9 @@
 {
   "name" : "gabidj/scontainer",
   "description" : "Simple Container for PHP & Zend Expressive",
+  "version" : "1.0",
   "require" : {
-    "php" : ">=5.5",
-    "zendframework/zend-expressive-router" : "^1.0"
+    "php" : ">=5.5"
   },
   "require-dev" : {
     "phpunit/phpunit" : "^4.8"
