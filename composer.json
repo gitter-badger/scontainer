@@ -1,7 +1,6 @@
 {
   "name" : "gabidj/scontainer",
   "description" : "Simple Container for PHP & Zend Expressive",
-  "version" : "1.0.0",
   "require" : {
     "php" : ">=5.5"
   },
@@ -21,7 +20,6 @@
       "GabiDJ\\Expressive\\SContainer\\" : "src/"
     }
   },
-  "files" : [ "src/Exception/ServiceNotFoundException.php.php", "src/ServiceWrapper.php", "src/SContainer.php" ],
   "authors" : [ {
     "name" : "Gabi DJ",
     "email" : "contact@gabisuciu.ro"
