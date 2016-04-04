@@ -9,13 +9,21 @@ use GabiDJ\Expressive\SContainer\Exception\ServiceNotFoundException;
 class SContainer implements ContainerInterface
 {
 	/**
-	 *
+	 * The array containing the services
 	 * @var unknown $_services
 	 */
 	private $_services = array();
 	
+	/**
+	 * The array containing the services factories (lazyload)
+	 * @var array
+	 */
 	private $_factories = array();
 	
+	/**
+	 * The array containing the invokable services name (lazyload)
+	 * @var array
+	 */
 	private $_invokables = array();
 	
 	public function getMethodParams($class, $method ='__invoke')
@@ -42,17 +50,22 @@ class SContainer implements ContainerInterface
 	 */
 	public function get($id)
 	{
-		if(isset($this->_factories[$id]))
+		if(!isset($this->_services[$id]))
 		{
-			$this->invokeByFactory($id);
-		}
-		if(isset($this->_invokables[$id]))
-		{
-			$this->invokeByClass($id);
+			if(isset($this->_factories[$id]))
+			{
+				$this->invokeByFactory($id);
+				unset($this->_factories[$id]);
+			}
+			if(isset($this->_invokables[$id]))
+			{
+				$this->invokeByClass($id);
+				unset($this->_invokables[$id]);
+			}
 		}
 		if(!$this->has($id))
 		{
-			throw new ServiceNotFoundException(sprintf('Container does not have service with name %s', $id));
+			throw new ServiceNotFoundException(sprintf('Container does not have service with name %s',$id));
 		}
 		$result = $this->_services[$id];
 		return $result;
@@ -71,6 +84,13 @@ class SContainer implements ContainerInterface
 		return ( isset($this->_services[$id]) || isset($this->_factories[$id]) || isset($this->_invokables[$id]) );
 	}
 	
+	/**
+	 * Add invokable service to be loaded
+	 * @param string $key
+	 * @param mixed $value
+	 * @param bool $overwrite
+	 * @throws \Exception
+	 */
 	public function setInvokable($key, $value, $overwrite = true)
 	{
 		if($overwrite == false && isset($this->_invokables[$key]))
@@ -79,7 +99,14 @@ class SContainer implements ContainerInterface
 		}
 		$this->_invokables[$key] = $value;
 	}
-
+	
+	/**
+	 * Add invokable service to be loaded via its Factory
+	 * @param string $key
+	 * @param mixed $value
+	 * @param bool $overwrite
+	 * @throws \Exception
+	 */
 	public function setFactory($key, $value, $overwrite = true)
 	{
 		if($overwrite == false && isset($this->_factories[$key]))
@@ -89,6 +116,11 @@ class SContainer implements ContainerInterface
 		$this->_factories[$key] = $value;
 	}
 
+	/**
+	 * Invoke service using factory
+	 * @param string $id (also reffered as $key in other methods) 
+	 * @throws \Exception
+	 */
 	public function invokeByFactory($id)
 	{
 		$factory = new $this->_factories[$id]();
@@ -113,6 +145,11 @@ class SContainer implements ContainerInterface
 		return true;
 	}
 
+	/**
+	 * Invoke service by creating a new instance
+	 * @param string $id (also reffered as $key in other methods)
+	 * @throws \Exception
+	 */
 	public function invokeByClass($id)
 	{
 		$invokable = $this->_invokables[$id];
@@ -120,6 +157,10 @@ class SContainer implements ContainerInterface
 		return true;
 	}
 	
+	/**
+	 * Parse configuration array to add dependencies to be loaded
+	 * @param array $configuration
+	 */
 	private function _setDependencies($configuration)
 	{
 		if(isset($configuration['dependencies']['factories']))
@@ -136,7 +177,6 @@ class SContainer implements ContainerInterface
 				$this->setInvokable($interface, $implementation);
 			}
 		}
-
 	}
 	
 	/**
@@ -150,7 +190,6 @@ class SContainer implements ContainerInterface
 		$this->setService('config', $configuration);
 		$this->setService(ContainerInterface::class, $this);
 		$this->setService(self::class, $this);
-		$this->setService('path', '/');
 		
 		$this->_setDependencies($configuration);
 		foreach($configuration as $config)
@@ -159,8 +198,19 @@ class SContainer implements ContainerInterface
 		}
 	}
 	
-	public function setService($key, $value)
+	/**
+	 * Add service to service array
+	 * @param string $key
+	 * @param mixed $value
+	 * @return bool $success
+	 */
+	public function setService($key, $value, $overwrite = true)
 	{
-		$this->_services[$key] = $value;
+		if($overwrite == true || !isset($this->_services[$key]))
+		{
+			$this->_services[$key] = $value;
+			return true;
+		}
+		return false;
 	}
 }
