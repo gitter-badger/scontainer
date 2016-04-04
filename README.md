@@ -19,7 +19,7 @@ Security notice:
 Usage
 -------
 
-* Sample Route configuration:
+* Container configuration:
 
 ```
 <?php
@@ -41,4 +41,5 @@ return $container;
 Support
 -------
  * Ask me anything about this project: twitter.com/GabiSuciu 
- * For support or suggestions visit: www.dotkernel.com/blog/ 
+ * For support or suggestions visit: www.dotkernel.com/blog/
+ *  
