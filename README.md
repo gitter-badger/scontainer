@@ -1,4 +1,6 @@
 # SContainer
+
+[![Join the chat at https://gitter.im/scontainer/Lobby](https://badges.gitter.im/scontainer/Lobby.svg)](https://gitter.im/scontainer/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Simple Container for Expressive
 
 Simple Container created for understanding (basic) Container mechanism in Zend Expressive
